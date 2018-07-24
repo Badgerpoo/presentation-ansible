@@ -8,7 +8,6 @@
 
 		<link rel="stylesheet" href="source/reveal.css">
 		<link rel="stylesheet" href="source/theme/night.css">
-		<link rel="stylesheet" href="source/highlight/styles/default.css">
 		<link rel="stylesheet" href="source/oli.css">
 
 		<!-- Theme used for syntax highlighting of code -->
@@ -22,12 +21,11 @@
 					<h1 style="color:orange;">Automating the network</h1>
 					<h3>Aka The Network as Code</h3>
 					<p>
-						<small><strong>Oliver Elliott</strong></small>
+						<strong style="color:rgba(0, 217, 255, 0.603);">Oliver Elliott</strong>
 					</p>
-				</section>
-
+        </section>
+        
 				<section>
-
           <section id="Quote">
 						<p>"I am rarely happier than when spending an entire day programming my computer to perform automatically a task that would otherwise take me a good ten seconds to do by hand."</p>
             <p align="right"><small>Douglas Adams</small></p>
@@ -45,7 +43,6 @@
 							<li class="fragment" style="color:red;">Worse: Typos causing outages!</li>
 						</ul>
 					</section>
-
 				</section>
 
 				<section>
@@ -128,16 +125,33 @@
 						<h2 style="color:orange;">Examples of playbooks</h2>
 						<pre><code class="YAML">
 ---
-some:
-  - yaml
-key: value
-  why: true
-    indent:
-      again:
+- name: Add a user
+  hosts: all
+  gather_facts: no
+  roles:
+    - cisco-ios-passwords
+
+  vars:
+    username: "a_user"
+    secret: "super_secret_password"
+
+  tasks:
+    - name: Add User
+      ios_config:
+        lines:
+          - "username {{ username }} privilege 15 secret 5 {{ secret }}"
+      register: ios_user_add
+      when: ansible_network_os == "ios"
+
+    - name: Save config
+      ios_command:
+        commands:
+          - wr
+      when: ios_user_add.changed
 						</code></pre>
 					</section>
-<!-- 
-					<section>
+
+					<!-- <section>
 						<h2>Live Demo!</h2>
 						<p class="fragment" style="color:red;">oh no</p>
 					</section> -->
@@ -151,10 +165,8 @@ key: value
 			</div>
 		</div>
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/lib/js/head.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/js/reveal.js"></script>
-    <!-- <script>'/lib/js/head.min.js'</script>
-    <script>'/js/reveal.js'</script> -->
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
 
 		<script>
 			// More info https://github.com/hakimel/reveal.js#configuration
