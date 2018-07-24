@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Automating the network</title>
+
+		<link rel="stylesheet" href="source/reveal.css">
+		<link rel="stylesheet" href="source/theme/night.css">
+		<link rel="stylesheet" href="source/highlight/styles/default.css">
+		<link rel="stylesheet" href="source/oli.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/lib/css/zenburn.css">
+
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section id="Title">
+					<h1 style="color:orange;">Automating the network</h1>
+					<h3>Aka The Network as Code</h3>
+					<p>
+						<small><strong>Oliver Elliott</strong></small>
+					</p>
+				</section>
+
+				<section>
+
+          <section id="Quote">
+						<p>"I am rarely happier than when spending an entire day programming my computer to perform automatically a task that would otherwise take me a good ten seconds to do by hand."</p>
+            <p align="right"><small>Douglas Adams</small></p>
+					</section>
+
+					<section id="In the olden days">
+						<h3>In the <strong>olden</strong> days</h3>
+							<img height="600px" src="images/typing_pool.jpg">
+							<h5>A Network team, circa 2005</h5>
+					
+						<ul>
+							<li class="fragment" style="color:orange;">Lots of manual, repetitive work</li>
+							<li class="fragment" style="color:orange;">Having to memorise the specific workflow of each possible configuration</li>
+							<li class="fragment" style="color:orange;">Bad: Typos mean you have to redo something</li>
+							<li class="fragment" style="color:red;">Worse: Typos causing outages!</li>
+						</ul>
+					</section>
+
+				</section>
+
+				<section>
+
+					<section id="Scripting">
+
+						<img src="images/matrix.gif" ></br>
+
+					</section>
+					<section id="TheGoodStuff">
+
+						<h3>Good vs Bad</h3>
+						<ul>
+							<li class="fragment" style="color:green;">Replaces repeatable tasks</li>
+							<li class="fragment" style="color:green;">Highly customisible</li>
+							<li class="fragment" style="color:red;">Difficult to maintain</li>
+							<li class="fragment" style="color:red;">Knowledge of how they work tends to sit with the author</li>
+						</ul>
+
+					</section>
+
+				</section>
+
+				<section>
+					<section id="Why Ansible">
+
+						<img src="images/ansible.jpg" ></br>
+
+					</section>
+
+					<section>
+
+						<h2>Why Orchestration?</h2>
+
+						<ul>
+							<li class="fragment">One place to manage all of the automation</li>
+							<li class="fragment">Allows for intra and inter team collaboration</li>
+							<li class="fragment">Relatively easy to manage workflow using gitlab</li>
+						</ul>
+
+					</section>
+
+					<section>
+
+						<h2>Why Ansible?</h2>
+						<p style="color:red;">Switches are dumb</p>
+						<p><span class="fragment">What about <strong style="color:teal;">Puppet</strong><span class="fragment">, or <strong style="color:purple;">Chef</strong><span class="fragment">, or <strong style="color:maroon;">Salt?</strong></p>
+
+					<ul class="fragment">
+						<li>Easy to install and run, simple 'pip install'</li>
+						<li>Easy to upgrade, no agents to worry about</li>
+						<li>(Relatively) easy to read playbooks</li>
+						<li>Good network vendor support: Cisco, Juniper, F5 etc.</li>
+					</ul>
+
+					</section>
+
+				</section>
+
+				<section>
+
+					<section id="How does Ansible work?">
+
+						<h2 style="color:orange;">How does Ansible work?</h2>
+						<p>Connects to a target host</p>
+						<p>Runs YAML playbooks</p>
+
+
+					</section>
+
+					<section>
+					<p style="color:orange;">For servers:</p>
+					<p>Ansible works by connecting to a server using SSH (or WS-Man/WinRM for Windows), copies the Python code over, executes it and then removes itself.</p><br>
+					<p style="color:orange;">For switches:</p>
+					<p>Python code is run locally, which in turn uses the python module paramiko to connect to the switch</p>
+
+					</section>
+
+					<section>
+						<h2 style="color:orange;">Examples of playbooks</h2>
+						<pre><code class="YAML">
+---
+some:
+  - yaml
+key: value
+  why: true
+    indent:
+      again:
+						</code></pre>
+					</section>
+<!-- 
+					<section>
+						<h2>Live Demo!</h2>
+						<p class="fragment" style="color:red;">oh no</p>
+					</section> -->
+
+				</section>
+
+				<section>
+					<h2 style="color:orange;">Questions?</h2>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/lib/js/head.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+				width: 1920,
+		    height: 1080,
+				controls: true,
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true },
+					// { src: "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/lib/js/head.min.js" },
+					// { src: "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.3.0/js/reveal.js" }
+				]
+			});
+		</script>
+	</body>
+</html>
