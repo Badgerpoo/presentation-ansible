@@ -1,0 +1,24 @@
+---
+- name: Add a user
+  hosts: all
+  gather_facts: no
+  roles:
+    - cisco-ios-passwords
+
+  vars:
+    username: "a_user"
+    secret: "super_secret_password"
+
+  tasks:
+    - name: Add User
+      ios_config:
+        lines:
+          - "username {{ username }} privilege 15 secret 5 {{ secret }}"
+      register: ios_user_add
+      when: ansible_network_os == "ios"
+
+    - name: Save config
+      ios_command:
+        commands:
+          - wr
+      when: ios_user_add.changed

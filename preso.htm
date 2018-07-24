@@ -123,6 +123,9 @@
 
 					<section>
 						<h2 style="color:orange;">Examples of playbooks</h2>
+          </section>
+          <section>
+            <h3 style="color:orange;">Add a user to a switch</h3>
 						<pre><code class="YAML">
 ---
 - name: Add a user
@@ -150,6 +153,61 @@
       when: ios_user_add.changed
 						</code></pre>
 					</section>
+
+          <section>
+            <h3 style="color:orange;">Label interfaces</h3>
+            <pre><code class="YAML">
+---
+- name: Int Label
+  hosts: all
+  connection: local
+  gather_facts: no
+  roles:
+    - access_switch
+    - cisco-ios-passwords
+  vars:
+    creds:
+      username: "{{ user }}"
+      password: "{{ password }}"
+      host: "{{ inventory_hostname }}"
+      # High timeout required for 3850s
+      timeout: 40
+
+  tasks:
+    - name: Get cdp neighbours using NTC
+      ntc_show_command:
+        command: "show cdp neighbor detail"
+        provider: "{{ creds }}"
+        connection: ssh
+        platform: "cisco_ios"
+        template_dir: "/home/oe0745/git/ntc-templates/templates/"
+      register: cdp_neighbors
+      check_mode: no
+
+    - name: Get interface descriptions
+      ntc_show_command:
+        command: "show interface status"
+        provider: "{{ creds }}"
+        connection: ssh
+        platform: "cisco_ios"
+        template_dir: "/home/oe0745/git/ntc-templates/templates/"
+      register: int_status
+      check_mode: no
+
+    - name: Change descriptions where required
+      ios_interface:
+        name: "{{ item.key }}"
+        description: "{{ item.value }}"
+      with_dict: "{{ cdp_neighbors | int_label(int_status) }}"
+      register: descs
+
+    - name: Save config
+      ios_command:
+        commands:
+          - wr
+      when: descs.changed
+            </code></pre>
+          </section>
 
 					<!-- <section>
 						<h2>Live Demo!</h2>
